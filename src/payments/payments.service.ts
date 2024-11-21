@@ -1,13 +1,12 @@
-// src/modules/payments/services/square-payment.service.ts
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client, Environment, ApiError, CreatePaymentRequest } from 'square';
 import { randomUUID } from 'crypto';
 
 @Injectable()
-export class SquarePaymentService {
+export class PaymentService {
   private readonly client: Client;
-  private readonly logger = new Logger(SquarePaymentService.name);
+  private readonly logger = new Logger(PaymentService.name);
 
   constructor(private configService: ConfigService) {
     this.client = new Client({
@@ -29,12 +28,12 @@ export class SquarePaymentService {
         sourceId,
         idempotencyKey: randomUUID(),
         amountMoney: {
-          amount: BigInt(amount * 100), // Convert to cents
+          amount: BigInt(amount * 100),
           currency,
         },
       };
 
-      const response = await this.client.paymentsApi.createPayment(body);
+      const response = await this.client.paymentsApi.createPayment(body);      
 
       this.logger.log(
         `Payment created successfully: ${response.result.payment.id}`,

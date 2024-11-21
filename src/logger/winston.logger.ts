@@ -1,7 +1,6 @@
-// src/logger/winston.logger.ts
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
-import { utilities as nestWinstonModuleUtilities } from 'nest-winston/dist/winston.utilities';
+import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 
 export const winstonLogger = WinstonModule.createLogger({
   transports: [

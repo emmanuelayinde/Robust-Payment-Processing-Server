@@ -9,7 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { RateLimit } from '@nestjs/throttler';
+import {  Throttle} from '@nestjs/throttler';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto';
 import { JwtAuthGuard } from '@auth/guards';
@@ -22,7 +22,7 @@ export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Post()
-  @RateLimit({ limit: 50, ttl: 60 })
+  @Throttle({default: { limit: 50, ttl: 60 }})
   @ApiOperation({ summary: 'Create a new transaction' })
   @ApiResponse({ status: 201, description: 'Transaction created successfully' })
   async createTransaction(@Body() createTransactionDto: CreateTransactionDto) {

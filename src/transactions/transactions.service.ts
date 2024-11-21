@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
 import { Transaction, TransactionStatus } from './entities';
-import { SquarePaymentService } from '@payments/payments.service';
+import { PaymentService } from '@payments/payments.service';
 import { CreateTransactionDto } from './dto';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class TransactionsService {
   constructor(
     @InjectRepository(Transaction)
     private transactionsRepository: Repository<Transaction>,
-    private squarePaymentService: SquarePaymentService,
+    private PaymentService: PaymentService,
   ) {}
 
   async create(
@@ -31,15 +31,15 @@ export class TransactionsService {
       const savedTransaction =
         await this.transactionsRepository.save(transaction);
 
-      // Process payment with Square
-      const payment = await this.squarePaymentService.createPayment(
+      // Process payment with 
+      const payment = await this.PaymentService.createPayment(
         createTransactionDto.amount,
         createTransactionDto.currency,
         createTransactionDto.source_id,
       );
 
-      // Update transaction with Square payment ID and status
-      savedTransaction.square_payment_id = payment.id;
+      // Update transaction with  payment ID and status
+      savedTransaction.payment_id = payment.id;
       savedTransaction.status = TransactionStatus.COMPLETED;
 
       const updatedTransaction =

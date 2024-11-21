@@ -41,7 +41,7 @@ export class Transaction {
   customer: Customer;
 
   @Column({ nullable: true })
-  square_payment_id: string;
+  payment_id: string;
 
   @CreateDateColumn()
   created_at: Date;
