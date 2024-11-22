@@ -68,6 +68,7 @@ export class PaymentService {
         currency,
         sourceId,
       );
+
       const payment = this.PaymentsRepository.create({
         amount,
         currency,
@@ -77,6 +78,7 @@ export class PaymentService {
             ? PaymentStatus.COMPLETED
             : PaymentStatus.PENDING,
       });
+
       await this.PaymentsRepository.save(payment);
       return payment;
     } catch (error) {
@@ -86,9 +88,7 @@ export class PaymentService {
   }
 
   async getAllPayments(): Promise<Payment[]> {
-    const payments = await this.PaymentsRepository.find({
-      relations: ['customer'],
-    });
+    const payments = await this.PaymentsRepository.find({});
     if (!payments) {
       this.logger.warn('No payments found');
     }
@@ -99,7 +99,7 @@ export class PaymentService {
   async getPayment(paymentId: string): Promise<Payment> {
     try {
       const payment = await this.PaymentsRepository.findOne({
-        where: { paymentId },
+        where: { id: paymentId },
       });
       return payment;
     } catch (error) {

@@ -1,4 +1,3 @@
-// src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -13,6 +12,9 @@ async function bootstrap() {
     bufferLogs: true,
     logger: winstonLogger,
   });
+
+  // Set up global prefix
+  app.setGlobalPrefix('api/v1');
 
   // Get config service
   const configService = app.get(ConfigService);
@@ -49,9 +51,6 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
-
-  // Set up global prefix
-  app.setGlobalPrefix('api/v1');
 
   // Get port from configuration
   const port = configService.get<number>('port', 8000);
