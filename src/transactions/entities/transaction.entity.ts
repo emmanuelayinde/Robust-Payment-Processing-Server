@@ -21,7 +21,7 @@ export class Transaction {
   id: string;
 
   @Column('uuid')
-  customer_id: string;
+  customerId: string;
 
   @Column('decimal', { precision: 10, scale: 2 })
   amount: number;
@@ -37,15 +37,15 @@ export class Transaction {
   status: TransactionStatus;
 
   @ManyToOne(() => Customer, (customer) => customer.transactions)
-  @JoinColumn({ name: 'customer_id' })
+  @JoinColumn({ name: 'customerId' })
   customer: Customer;
 
   @Column({ nullable: true })
-  payment_id: string;
+  paymentId: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 }

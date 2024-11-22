@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { PaymentService } from './payments.service';
-import { CreatePaymentDto } from './dto/create-payment.dto';
+import { CreatePaymentDto } from './dto';
 
 @Controller('payments')
 export class PaymentsController {
@@ -12,8 +12,13 @@ export class PaymentsController {
     return await this.paymentsService.createPayment(amount, currency, sourceId);
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.paymentsService.getPayment(id);
+  //   @Get(':id')
+  //   async findOne(@Param('id') id: string) {
+  //     return await this.paymentsService.getPayment(id);
+  //   }
+
+  @Get('get-locations')
+  async findOne() {
+    return await this.paymentsService.getLocations();
   }
 }

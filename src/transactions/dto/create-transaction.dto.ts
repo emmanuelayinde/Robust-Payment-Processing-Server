@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateTransactionDto {
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
   @IsUUID()
-  customer_id: string;
+  customerId: string;
 
   @ApiProperty({ example: 100.0 })
   @IsNumber()
@@ -17,5 +17,5 @@ export class CreateTransactionDto {
 
   @ApiProperty({ example: 'card_nonce_from_square' })
   @IsString()
-  source_id: string;
+  sourceId: string;
 }

@@ -20,7 +20,7 @@ export class TransactionsService {
     createTransactionDto: CreateTransactionDto,
   ): Promise<Transaction> {
     const transaction = this.transactionsRepository.create({
-      customer_id: createTransactionDto.customer_id,
+      customerId: createTransactionDto.customerId,
       amount: createTransactionDto.amount,
       currency: createTransactionDto.currency,
       status: TransactionStatus.PENDING,
@@ -31,15 +31,15 @@ export class TransactionsService {
       const savedTransaction =
         await this.transactionsRepository.save(transaction);
 
-      // Process payment with 
+      // Process payment with
       const payment = await this.PaymentService.createPayment(
         createTransactionDto.amount,
         createTransactionDto.currency,
-        createTransactionDto.source_id,
+        createTransactionDto.sourceId,
       );
 
       // Update transaction with  payment ID and status
-      savedTransaction.payment_id = payment.id;
+      savedTransaction.paymentId = payment.id;
       savedTransaction.status = TransactionStatus.COMPLETED;
 
       const updatedTransaction =
@@ -73,5 +73,18 @@ export class TransactionsService {
     }
 
     return transaction;
+  }
+
+  async findAll(): Promise<Transaction[]> {
+    const transactions = await this.transactionsRepository.find({
+      relations: ['customer'],
+    });
+
+    if (!transactions) {
+      this.logger.warn(`Transactions not found`);
+      throw new NotFoundException(`Transactions not found`);
+    }
+
+    return transactions;
   }
 }

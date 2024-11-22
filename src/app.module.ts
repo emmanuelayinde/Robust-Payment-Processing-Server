@@ -1,10 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {
-  ThrottlerGuard,
-  ThrottlerModule,
-} from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { WinstonModule } from 'nest-winston';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { CustomersModule } from '@customers/customers.module';
@@ -16,6 +13,7 @@ import { LoggingInterceptor } from '@common/interceptors';
 import { validationSchema } from '@schema/validation.schema';
 import config from './config';
 import * as winston from 'winston';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -24,6 +22,11 @@ import * as winston from 'winston';
       isGlobal: true,
       load: [config],
       validationSchema,
+    }),
+    // JWT configuration
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'defaultSecret',
+      signOptions: { expiresIn: '1h' },
     }),
     // TypeORM configuration
     TypeOrmModule.forRootAsync({
@@ -39,18 +42,20 @@ import * as winston from 'winston';
         migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
         synchronize: false,
         migrationsRun: true,
-        connectTimeoutMS: 30000, 
-        retryAttempts: 5, 
+        connectTimeoutMS: 30000,
+        retryAttempts: 5,
         retryDelay: 3000,
-        ssl: true 
+        ssl: true,
       }),
       inject: [ConfigService],
     }),
     // Throttler configuration
-    ThrottlerModule.forRoot([{
-      ttl: 60,
-      limit: 100,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60,
+        limit: 100,
+      },
+    ]),
     // Logger configuration
     WinstonModule.forRoot({
       transports: [
@@ -99,5 +104,6 @@ import * as winston from 'winston';
       useClass: LoggingInterceptor,
     },
   ],
+  exports: [JwtModule],
 })
 export class AppModule {}

@@ -33,12 +33,10 @@ export class PaymentService {
         },
       };
 
-      const response = await this.client.paymentsApi.createPayment(body);      
+      const { result } = await this.client.paymentsApi.createPayment(body);
 
-      this.logger.log(
-        `Payment created successfully: ${response.result.payment.id}`,
-      );
-      return response.result.payment;
+      this.logger.log(`Payment created successfully: ${result.payment.id}`);
+      return result.payment;
     } catch (error) {
       if (error instanceof ApiError) {
         this.logger.error(`Square API Error: ${error.message}`);
@@ -54,10 +52,22 @@ export class PaymentService {
 
   async getPayment(paymentId: string): Promise<any> {
     try {
-      const response = await this.client.paymentsApi.getPayment(paymentId);
-      return response.result.payment;
+      const { result } = await this.client.paymentsApi.getPayment(paymentId);
+      return result.payment;
     } catch (error) {
       this.logger.error(`Error retrieving payment ${paymentId}:`, error.stack);
+      throw error;
+    }
+  }
+
+  async getLocations(): Promise<any> {
+    try {
+      const { result } = await this.client.locationsApi.listLocations();
+      return {
+        locationId: result.locations[0]['id'],
+      };
+    } catch (error) {
+      this.logger.error('Error fetching square location id:', error);
       throw error;
     }
   }

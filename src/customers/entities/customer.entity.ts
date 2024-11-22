@@ -20,12 +20,15 @@ export class Customer {
   @Column({ unique: true })
   email: string;
 
+  @Column()
+  password: string;
+
   @OneToMany(() => Transaction, (transaction) => transaction.customer)
   transactions: Transaction[];
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 }

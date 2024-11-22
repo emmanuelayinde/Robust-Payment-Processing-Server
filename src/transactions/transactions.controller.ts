@@ -8,25 +8,38 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import {  Throttle} from '@nestjs/throttler';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto';
 import { JwtAuthGuard } from '@auth/guards';
 
 @ApiTags('transactions')
+@Throttle({ default: { limit: 50, ttl: 60 } })
 @Controller('transactions')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @UseInterceptors(LoggingInterceptor)
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Post()
-  @Throttle({default: { limit: 50, ttl: 60 }})
   @ApiOperation({ summary: 'Create a new transaction' })
   @ApiResponse({ status: 201, description: 'Transaction created successfully' })
   async createTransaction(@Body() createTransactionDto: CreateTransactionDto) {
     return this.transactionsService.create(createTransactionDto);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all transactions' })
+  @ApiResponse({ status: 200, description: 'Transactions retrieved' })
+  async getAllTransactions() {
+    return this.transactionsService.findAll();
   }
 
   @Get(':id')

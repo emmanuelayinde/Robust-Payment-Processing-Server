@@ -14,12 +14,13 @@ export class CustomersService {
     private customersRepository: Repository<Customer>,
   ) {}
 
-  async create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
+  async createNewCustomer(
+    createCustomerDto: CreateCustomerDto,
+  ): Promise<Customer> {
     const customer = this.customersRepository.create(createCustomerDto);
 
     try {
       const savedCustomer = await this.customersRepository.save(customer);
-      this.logger.log(`Customer created with ID: ${savedCustomer.id}`);
       return savedCustomer;
     } catch (error) {
       this.logger.error('Error creating customer:', error.stack);
@@ -27,17 +28,43 @@ export class CustomersService {
     }
   }
 
-  async findOne(id: string): Promise<Customer> {
+  async findById(id: string): Promise<Customer> {
     const customer = await this.customersRepository.findOne({
       where: { id },
+      select: ['id', 'name', 'email', 'createdAt', 'updatedAt'],
       relations: ['transactions'],
     });
 
     if (!customer) {
-      this.logger.warn(`Customer with ID ${id} not found`);
-      throw new NotFoundException(`Customer with ID ${id} not found`);
+      this.logger.warn(`Customer with id ${id} not found`);
+      throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
     return customer;
+  }
+
+  async findByEmail(email: string): Promise<Customer> {
+    const customer = await this.customersRepository.findOne({
+      where: { email },
+    });
+
+    if (!customer) {
+      this.logger.warn(`Customer with email ${email} not found`);
+      throw new NotFoundException(`Customer with email ${email} not found`);
+    }
+
+    return customer;
+  }
+
+  async getAllCustomers(): Promise<Customer[]> {
+    try {
+      const customers = await this.customersRepository.find({
+        select: ['id', 'name', 'email'],
+      });
+      return customers;
+    } catch (error) {
+      this.logger.error('Error fetching customers:', error.stack);
+      throw error;
+    }
   }
 }
