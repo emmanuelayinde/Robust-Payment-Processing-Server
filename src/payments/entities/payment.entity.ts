@@ -9,14 +9,14 @@ import {
 } from 'typeorm';
 import { Customer } from '@customers/entities';
 
-export enum TransactionStatus {
+export enum PaymentStatus {
   PENDING = 'pending',
   COMPLETED = 'completed',
   FAILED = 'failed',
 }
 
-@Entity('transactions')
-export class Transaction {
+@Entity('payments')
+export class Payment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -31,12 +31,12 @@ export class Transaction {
 
   @Column({
     type: 'enum',
-    enum: TransactionStatus,
-    default: TransactionStatus.PENDING,
+    enum: PaymentStatus,
+    default: PaymentStatus.PENDING,
   })
-  status: TransactionStatus;
+  status: PaymentStatus;
 
-  @ManyToOne(() => Customer, (customer) => customer.transactions)
+  @ManyToOne(() => Customer, (customer) => customer.payments)
   @JoinColumn({ name: 'customerId' })
   customer: Customer;
 

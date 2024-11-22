@@ -11,7 +11,7 @@ import { winstonLogger } from '@logger/winston.logger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
-    logger: winstonLogger
+    logger: winstonLogger,
   });
 
   // Get config service
@@ -49,6 +49,9 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
+
+  // Set up global prefix
+  app.setGlobalPrefix('api/v1');
 
   // Get port from configuration
   const port = configService.get<number>('port', 8000);

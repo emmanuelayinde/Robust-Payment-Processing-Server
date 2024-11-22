@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 
-import { Transaction } from '@transactions/entities';
+import { Payment } from '@payments/entities';
 
 @Entity('customers')
 export class Customer {
@@ -23,8 +23,8 @@ export class Customer {
   @Column()
   password: string;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.customer)
-  transactions: Transaction[];
+  @OneToMany(() => Payment, (payment) => payment.customer)
+  payments: Payment[];
 
   @CreateDateColumn()
   createdAt: Date;

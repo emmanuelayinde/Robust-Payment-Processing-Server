@@ -5,7 +5,6 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { WinstonModule } from 'nest-winston';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { CustomersModule } from '@customers/customers.module';
-import { TransactionsModule } from '@transactions/transactions.module';
 import { PaymentsModule } from '@payments/payments.module';
 import { AuthModule } from './auth/auth.module';
 import { HttpExceptionFilter } from '@common/filters';
@@ -88,7 +87,6 @@ import { JwtModule } from '@nestjs/jwt';
     AuthModule,
     CustomersModule,
     PaymentsModule,
-    TransactionsModule,
   ],
   providers: [
     {
