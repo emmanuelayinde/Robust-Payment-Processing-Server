@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -29,10 +30,26 @@ export class PaymentsController {
   @Post()
   @ApiOperation({ summary: 'Create payment' })
   @ApiResponse({ status: 201, description: 'Payment created' })
-  async createPayment(@Body() createPaymentDto: CreatePaymentDto) {
+  async createPayment(
+    @Req() request: Request,
+    @Body() createPaymentDto: CreatePaymentDto,
+  ) {
+    const customerId = request['customerId'];
     const { amount, currency, sourceId } = createPaymentDto;
-    console.log({ amount, currency, sourceId });
-    return this.paymentsService.createPayment(amount, currency, sourceId);
+    return this.paymentsService.createPayment(
+      amount,
+      currency,
+      sourceId,
+      customerId,
+    );
+  }
+
+  @Get('my-payments')
+  @ApiOperation({ summary: 'Get all current customer payments' })
+  @ApiResponse({ status: 200, description: 'Payments retrieved' })
+  async retrieveAllCustomerPayments(@Req() request: Request) {
+    const customerId = request['customerId'];
+    return this.paymentsService.getAllCustomerPayments(customerId);
   }
 
   @Get()

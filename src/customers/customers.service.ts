@@ -13,7 +13,7 @@ export class CustomersService {
     private customersRepository: Repository<Customer>,
   ) {}
 
-  async findById(id: string): Promise<Customer> {
+  async getCustomerById(id: string): Promise<Customer> {
     const customer = await this.customersRepository.findOne({
       where: { id },
       select: ['id', 'name', 'email', 'createdAt', 'updatedAt', 'payments'],

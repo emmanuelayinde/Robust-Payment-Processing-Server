@@ -6,7 +6,6 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-
 import { Payment } from '@payments/entities';
 
 @Entity('customers')

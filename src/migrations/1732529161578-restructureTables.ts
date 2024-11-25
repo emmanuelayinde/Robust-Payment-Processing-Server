@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class RemoveTransactionAndCreatePaymentTable1732267787134 implements MigrationInterface {
-    name = 'RemoveTransactionAndCreatePaymentTable1732267787134'
+export class RestructureTables1732529161578 implements MigrationInterface {
+    name = 'RestructureTables1732529161578'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TYPE "public"."payments_status_enum" AS ENUM('pending', 'completed', 'failed')`);

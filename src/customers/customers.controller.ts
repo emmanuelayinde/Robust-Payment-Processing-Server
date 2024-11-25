@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Param,
+  Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import {
 import { LoggingInterceptor } from '@common/interceptors';
 import { CustomersService } from './customers.service';
 import { JwtAuthGuard } from '@auth/guards';
+import { Request } from 'express';
 
 @ApiTags('customers')
 @Controller('customers')
@@ -30,10 +32,18 @@ export class CustomersController {
     return this.customersService.getAllCustomers();
   }
 
+  @Get('current-customer')
+  @ApiOperation({ summary: 'Get current customer' })
+  @ApiResponse({ status: 200, description: 'Customer found' })
+  async getCurrentCustomer(@Req() request: Request) {
+    const customerId = request['customerId'];
+    return this.customersService.getCustomerById(customerId);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get customer by ID' })
   @ApiResponse({ status: 200, description: 'Customer found' })
   async getCustomer(@Param('id') id: string) {
-    return this.customersService.findById(id);
+    return this.customersService.getCustomerById(id);
   }
 }

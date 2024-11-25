@@ -61,6 +61,7 @@ export class PaymentService {
     amount: number,
     currency: string,
     sourceId: string,
+    customerId: string,
   ): Promise<Payment> {
     try {
       const squarePayment = await this.createSquarePayment(
@@ -69,9 +70,12 @@ export class PaymentService {
         sourceId,
       );
 
+      console.log({ squarePayment });
+
       const payment = this.PaymentsRepository.create({
         amount,
         currency,
+        customerId,
         paymentId: squarePayment.id,
         status:
           squarePayment.status === 'COMPLETED'
@@ -96,6 +100,21 @@ export class PaymentService {
     return payments;
   }
 
+  async getAllCustomerPayments(customerId: string): Promise<Payment[]> {
+    try {
+      const payments = await this.PaymentsRepository.find({
+        where: { customerId },
+      });
+      return payments;
+    } catch (error) {
+      this.logger.error(
+        `Error retrieving customer payments by customer ID ${customerId}:`,
+        error.stack,
+      );
+      throw error;
+    }
+  }
+
   async getPayment(paymentId: string): Promise<Payment> {
     try {
       const payment = await this.PaymentsRepository.findOne({
@@ -107,16 +126,4 @@ export class PaymentService {
       throw error;
     }
   }
-
-  // async getLocations(): Promise<any> {
-  //   try {
-  //     const { result } = await this.client.locationsApi.listLocations();
-  //     return {
-  //       locationId: result.locations[0]['id'],
-  //     };
-  //   } catch (error) {
-  //     this.logger.error('Error fetching square location id:', error);
-  //     throw error;
-  //   }
-  // }
 }
