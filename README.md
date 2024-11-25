@@ -9,15 +9,15 @@ A robust payment processing system built with NestJS, integrating Square API for
 - Node.js (v18+)
 - Yarn
 - PostgreSQL
-- Square Developer Account
+- Square Credit Card SDK
 
 ## Installation
 
 1. Clone the repository
 
 ```bash
-git clone https://your-repo-url.git
-cd nestjs-payment-system
+git clone https://github.com/emmanuelayinde/Robust-Payment-Processing-Server.git
+cd Robust-Payment-Processing-Server
 ```
 
 2. Install dependencies
@@ -31,17 +31,20 @@ yarn install
 - Copy `.env.example` to `.env`
 - Fill in your Square API credentials
 - Configure database connection
+- Fill your JWT secret and TTL (Time To Live)
 
 4. Set up PostgreSQL database
 
-```bash
-createdb payment_system_db
-```
+Follow [this docs](https://render.com/docs/postgresql-creating-connecting) to set up PostgreSQL databse on render account for free.
 
 5. Run database migrations
 
 ```bash
-yarn typeorm migration:run
+# First generate your migrations
+yarn migration:generate -- ./src/migrations/your-migration-name
+
+# The, apply the migrations
+yarn migration:run
 ```
 
 ## Running the Application
@@ -70,6 +73,33 @@ yarn test:cov
 ## API Documentation
 
 Access Swagger UI at `/api-docs` when the application is running
+
+## Payment APIs
+
+The `/payment` - POST endpoint requires these parameter.
+
+```
+{
+  "amount": Amount debitted in credit card by square from the frontend,
+  "currency": Currency in which the amount was debitted,
+  "sourceId": The token (also source id) generated from the frontend after payment has been made.
+}
+```
+
+### Credit Card Payment
+
+Head over to the [frontend url](https://payment-card-processing-ui.vercel.app/) and fill in the following data:
+
+```
+Card Number: 4111 1111 1111 1111
+Expire Date: 12/27
+CVV Number: 111
+ZIP: 100001
+```
+
+On you click on the pay button, a payment token that looks like this `cnon:CA4SEB5LzLyROpd9qKXnv4DbX7kYASgC` will be generated for you. Copy the token and use it on the [server payment endpoint](https://payment-card-processing-server.onrender.com/api-docs#/Payments/PaymentsController_createPayment) as the `sourceId`
+
+That is all.
 
 ## Key Features
 
